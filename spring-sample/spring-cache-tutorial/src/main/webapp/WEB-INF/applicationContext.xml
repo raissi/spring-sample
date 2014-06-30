@@ -1,0 +1,49 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop.xsd
+    http://www.springframework.org/schema/task
+    http://www.springframework.org/schema/task/spring-task.xsd
+    http://www.springframework.org/schema/cache 
+    http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+	<context:component-scan base-package="com.raissi" />
+	<!-- In case we need transactions: <tx:annotation-driven transaction-manager="jpaTransactionManager"></tx:annotation-driven> -->
+	<!-- Needed to run @Async methods -->
+	<task:annotation-driven></task:annotation-driven>
+	<context:annotation-config></context:annotation-config>
+
+	<!-- Spring AOP: -->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+
+
+
+	<!-- Ehcache Management -->
+	<cache:annotation-driven key-generator="cacheKeyGenerator" />
+	<bean id="cacheKeyGenerator" class="com.raissi.spring.cache.CacheKeyGenerator" />
+
+	<!-- <cache:annotation-driven/> -->
+
+	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager"
+		p:cache-manager-ref="ehcache" />
+	<!-- EhCache library setup -->
+	<bean id="ehcache"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"
+		p:config-location="classpath:ehcache.xml" />
+
+
+	<!-- application.properties will contain all our config data: db username, 
+		password, etc... -->
+	<context:property-placeholder
+		location="classpath:spring-cache.${env}.properties"></context:property-placeholder>
+
+</beans>

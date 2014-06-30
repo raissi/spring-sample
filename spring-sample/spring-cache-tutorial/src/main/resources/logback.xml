@@ -1,0 +1,126 @@
+<configuration>
+
+	<property resource="spring-cache.${env}.properties" />
+
+	<!-- End levels -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{[yyyy-MM-dd] HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE-INFO"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.basefolder}/${log.info.filename}</file>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>${log.rolling.folder}/sample-info.%i.log.zip</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>3</maxIndex>
+		</rollingPolicy>
+
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>${log.file.maxSize}</maxFileSize>
+		</triggeringPolicy>
+
+		<encoder>
+			<pattern>%d{[yyyy-MM-dd] HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+
+	<appender name="FILE-ERROR"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.basefolder}/${log.error.filename}</file>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>${log.rolling.folder}/sample-error.%i.log.zip</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>3</maxIndex>
+		</rollingPolicy>
+
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>${log.file.maxSize}</maxFileSize>
+		</triggeringPolicy>
+
+		<encoder>
+			<pattern>%d{[yyyy-MM-dd] HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+
+	<appender name="FILE-DEBUG"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.basefolder}/${log.debug.filename}</file>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>${log.rolling.folder}/sample-debug.%i.log.zip</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>3</maxIndex>
+		</rollingPolicy>
+
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>${log.file.maxSize}</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>%d{[yyyy-MM-dd] HH:mm:ss.SSS} %level %logger{36} - %msg
+				%caller{1, CALLER_EVAL}</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>DEBUG</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+
+	<appender name="AUDIT_FILE" class="ch.qos.logback.core.FileAppender">
+		<!-- the filter element -->
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+			<evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+				<marker>AUDIT_SYS</marker>
+			</evaluator>
+			<onMismatch>DENY</onMismatch>
+			<onMatch>ACCEPT</onMatch>
+		</filter>
+		<file>${log.basefolder}/${log.audit.filename}</file>
+		<encoder>
+			<pattern>%d{[yyyy-MM-dd] HH:mm:ss.SSS} %level %logger{36} - %msg %n</pattern>
+		</encoder>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>${log.rolling.folder}/sample-audit.%i.log.zip</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>3</maxIndex>
+		</rollingPolicy>
+
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>${log.file.maxSize}</maxFileSize>
+		</triggeringPolicy>
+	</appender>
+
+	<!-- Levels by packages and classes: -->
+	<logger name="com.sample.Foo" level="info">
+	</logger>
+
+	<root level="debug">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE-INFO" />
+		<appender-ref ref="FILE-DEBUG" />
+		<appender-ref ref="FILE-ERROR" />
+		<appender-ref ref="AUDIT_FILE" />
+	</root>
+
+
+</configuration>
